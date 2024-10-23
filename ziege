@@ -1,0 +1,45 @@
+# Import necessary libraries
+import random
+
+# Simulation of both strategies
+def simulate_monty_hall(strategy, num_trials=10000):
+    wins = 0
+    for _ in range(num_trials):
+        # Step 1: Randomly assign the car behind one of the three doors
+        car_behind = random.randint(0, 2)  # 0, 1, 2 are the door indices
+        
+        # Step 2: Player randomly picks a door
+        player_choice = random.randint(0, 2)
+        
+        # Step 3: Host opens one of the remaining doors that does not have the car
+        remaining_doors = [door for door in [0, 1, 2] if door != player_choice and door != car_behind]
+        opened_door = random.choice(remaining_doors)
+        
+        # Step 4: Based on the chosen strategy (stay or switch)
+        if strategy == 'switch':
+            # Player switches to the other unopened door
+            player_choice = [door for door in [0, 1, 2] if door != player_choice and door != opened_door][0]
+        
+        # Step 5: Check if the player won the car
+        if player_choice == car_behind:
+            wins += 1
+    
+    return wins
+
+# Run the simulation for both strategies
+num_trials = 10000
+stay_wins = simulate_monty_hall('stay', num_trials)
+switch_wins = simulate_monty_hall('switch', num_trials)
+
+# Store results in a dictionary for display
+results = {
+    'Strategy': ['Stay', 'Switch'],
+    'Wins': [stay_wins, switch_wins],
+    'Win Rate (%)': [stay_wins / num_trials * 100, switch_wins / num_trials * 100]
+}
+
+import pandas as pd
+df_results = pd.DataFrame(results)
+
+# Display the results to the user
+import ace_tools as tools; tools.display_dataframe_to_user(name="Monty Hall Strategy Simulation Results", dataframe=df_results)
